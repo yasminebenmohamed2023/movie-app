@@ -1,0 +1,24 @@
+<div class="movie-container">
+  @if (movie) {
+    <div>
+      <img [src]="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="{{movie.title}} poster">
+    </div>
+
+    <div class="movie-details">
+      <h1>{{movie.original_title}}</h1>
+      <button class="wishlist-btn" [disabled]="buttonDisabled" (click)="addToWishlist(movie)">
+        {{ buttonDisabled ? 'Added to wishlist' : 'Add to my wishlist' }}
+      </button>
+
+      <div class="meta-row">
+        <span class="pill">Lang: {{movie.original_language}}</span>
+        <span class="pill">Release: {{movie.release_date | date: 'longDate'}}</span>
+      </div>
+
+      <p>
+        <label>Overview</label><br />
+        {{movie.overview}}
+      </p>
+    </div>
+  }
+</div>

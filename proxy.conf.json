@@ -1,0 +1,11 @@
+{
+  "/img": {
+    "target": "https://image.tmdb.org",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/img": ""
+    },
+    "logLevel": "debug"
+  }
+}

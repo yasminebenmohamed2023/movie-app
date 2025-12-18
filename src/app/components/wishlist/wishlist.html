@@ -1,0 +1,16 @@
+<div class="movie-list">
+    @if (wishlist.length === 0) {
+        <p class="empty">Your wishlist is empty. Add movies from the list.</p>
+    }
+    <div class="card-grid">
+        @for (movie of wishlist; track movie.id){
+            <div class="movie-card" (click)="navigateTo(movie.id)">
+                <img [src]="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="{{movie.title}} poster">
+                <div class="movie-details">
+                    <h2>{{movie.title}}</h2>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+        

@@ -1,0 +1,42 @@
+<div class="sidebar-container">
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    ♥ {{ wishlist.length }}
+  </button>
+
+  <aside class="sidebar" [class.open]="isOpen">
+    <div class="sidebar-header">
+      <h2>My Wishlist</h2>
+      <button class="close-btn" (click)="closeSidebar()">
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      @if (wishlist.length === 0) {
+        <p class="empty">No movies added yet</p>
+      } @else {
+        <div class="wishlist-items">
+          @for (movie of wishlist; track movie.id) {
+            <div class="wishlist-item">
+              @if (movie.poster_path) {
+                <img [src]="getImageUrl(movie.poster_path)" 
+                     [alt]="movie.title" 
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22150%22%3E%3Crect fill=%22%23333%22 width=%22100%22 height=%22150%22/%3E%3C/svg%3E'" />
+              } @else {
+                <div class="no-image">No Image</div>
+              }
+              <div class="item-info">
+                <h4>{{ movie.title }}</h4>
+                <p class="year">{{ movie.release_date | date: 'yyyy' }}</p>
+              </div>
+              <button class="remove-btn" (click)="removeFromWishlist(movie.id)" 
+                      title="Remove">✕</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" [class.open]="isOpen" (click)="closeSidebar()"></div>
+</div>

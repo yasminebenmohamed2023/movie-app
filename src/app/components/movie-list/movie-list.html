@@ -1,0 +1,253 @@
+<div class="movie-list">
+  <!-- Search and Filters -->
+  <div class="filters-container">
+    <div class="search-container">
+      <div class="search-wrapper">
+        <input 
+          type="text" 
+          [(ngModel)]="searchInput" 
+          (ngModelChange)="onSearch($event)"
+          (focus)="onSearchFocus()"
+          (blur)="onSearchBlur()"
+          placeholder="Rechercher un film..."
+          class="search-input"
+          #searchInputElement
+        >
+        <span class="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+      </div>
+      <button 
+        (click)="toggleFilters()" 
+        class="filter-toggle"
+        [class.animate]="showFilters"
+      >
+        <span *ngIf="showFilters">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          Cacher les filtres
+        </span>
+        <span *ngIf="!showFilters">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+            <path d="M4 21v-7"></path>
+            <path d="M4 10V3"></path>
+            <path d="M12 21v-9"></path>
+            <path d="M12 8V3"></path>
+            <path d="M20 21v-5"></path>
+            <path d="M20 12V3"></path>
+            <path d="M1 14h6"></path>
+            <path d="M9 8h6"></path>
+            <path d="M17 16h6"></path>
+          </svg>
+          Afficher les filtres
+        </span>
+      </button>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="advanced-filters" *ngIf="showFilters" @fadeInOut>
+      <div class="filter-group">
+        <label for="genre-filter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Genre
+        </label>
+        <div class="select-wrapper">
+          <select 
+            id="genre-filter" 
+            [ngModel]="selectedGenre()" 
+            (ngModelChange)="onGenreChange($event ? +$event : null)"
+            class="filter-select"
+          >
+            <option [ngValue]="null">Tous les genres</option>
+            <option *ngFor="let genre of genres" [ngValue]="genre.id">
+              {{ genre.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="sort-by">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"></path>
+            <path d="M6 12h12"></path>
+            <path d="M9 18h6"></path>
+          </svg>
+          Trier par
+        </label>
+        <div class="select-wrapper">
+          <select 
+            #sortSelect
+            id="sort-by" 
+            [(ngModel)]="sortBy" 
+            (change)="onSortChange(sortSelect.value)"
+            class="filter-select"
+          >
+            <option value="popularity.desc">Popularité (décroissant)</option>
+            <option value="popularity.asc">Popularité (croissant)</option>
+            <option value="vote_average.desc">Note (décroissant)</option>
+            <option value="vote_average.asc">Note (croissant)</option>
+            <option value="release_date.desc">Date de sortie (récent)</option>
+            <option value="release_date.asc">Date de sortie (ancien)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="year-filter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Année
+        </label>
+        <div class="input-wrapper">
+          <input 
+            type="number" 
+            id="year-filter" 
+            [(ngModel)]="yearFilter" 
+            (ngModelChange)="onYearFilterChange($event)"
+            placeholder="Toutes les années"
+            min="1900" 
+            max="2025"
+            class="year-input"
+          >
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button 
+          (click)="resetFilters()" 
+          class="reset-filters"
+          [disabled]="!hasActiveFilters()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          Réinitialiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Chargement des films...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-message">
+      <p>{{ error() }}</p>
+      <button (click)="loadMovies()" class="retry-button">Réessayer</button>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading() && !error() && movies().length === 0) {
+    <div class="empty-state">
+      <p>Aucun film trouvé. Essayez de modifier vos critères de recherche.</p>
+    </div>
+  }
+
+  <!-- Movie Grid -->
+  <div class="movie-grid" [@stagger]="movies().length">
+    @for (movie of movies(); track movie.id) {
+      <div class="movie-card" [@fadeIn]>
+        <div class="movie-poster" (click)="router.navigate(['/movie', movie.id])">
+          @if (movie.poster_path) {
+            <img 
+              [src]="movie.poster_path | imageUrl" 
+              [alt]="movie.title + ' poster'"
+              loading="lazy"
+              (error)="handleImageError($event)"
+            >
+          } @else {
+            <div class="no-poster">
+              <span>{{ movie.title }}</span>
+            </div>
+          }
+          <div class="movie-rating">
+            <span class="star">★</span>
+            <span>{{ movie.vote_average.toFixed(1) }}</span>
+          </div>
+          <button 
+            class="wishlist-button" 
+            (click)="toggleWishlist(movie); $event.stopPropagation()"
+            [class.in-wishlist]="isInWishlist(movie.id)"
+            [title]="isInWishlist(movie.id) ? 'Retirer des favoris' : 'Ajouter aux favoris'"
+          >
+            ♥
+          </button>
+        </div>
+        
+        <div class="movie-info">
+          <h3 class="movie-title" (click)="router.navigate(['/movie', movie.id])">
+            {{ movie.title }}
+          </h3>
+          <div class="movie-meta">
+            <span class="release-date">
+              {{ movie.release_date | date: 'yyyy' }}
+            </span>
+            <span class="genre" *ngIf="movie.genre_ids && movie.genre_ids.length > 0">
+              {{ movie.genre_ids[0] | genre:genres }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button 
+        [disabled]="currentPage() === 1" 
+        (click)="onPageChange(currentPage() - 1)"
+        class="page-arrow"
+      >
+        &laquo;
+      </button>
+      
+      @for (page of paginationRange(); track page) {
+        @if (page === '...') {
+          <span class="ellipsis">{{ page }}</span>
+        } @else {
+          <button 
+            [class.active]="page === currentPage()"
+            (click)="onPageChange(page)"
+            class="page-number"
+          >
+            {{ page }}
+          </button>
+        }
+      }
+      
+      <button 
+        [disabled]="currentPage() === totalPages()" 
+        (click)="onPageChange(currentPage() + 1)"
+        class="page-arrow"
+      >
+        &raquo;
+      </button>
+    </div>
+  }
+</div>

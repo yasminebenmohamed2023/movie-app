@@ -1,0 +1,58 @@
+ .movie-container {
+	display: grid;
+	grid-template-columns: 1fr 1.2fr;
+	gap: 32px;
+	padding: 32px;
+	background: linear-gradient(145deg, rgba(254, 198, 6, 0.06), rgba(19, 28, 47, 0.7));
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+}
+
+.movie-container img {
+	width: 100%;
+	border-radius: 16px;
+	object-fit: cover;
+	box-shadow: 0 20px 38px rgba(0, 0, 0, 0.45);
+}
+
+.movie-details {
+	display: grid;
+	gap: 12px;
+	align-content: start;
+}
+
+.movie-details h1 {
+	margin: 0 0 4px;
+	font-size: 28px;
+	line-height: 1.2;
+}
+
+.meta-row {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.movie-details label {
+	display: inline-block;
+	color: var(--muted);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	margin-right: 6px;
+}
+
+.movie-details p {
+	margin: 0;
+	color: var(--text);
+}
+
+.wishlist-btn {
+	justify-self: start;
+}
+
+@media (max-width: 900px) {
+	.movie-container {
+		grid-template-columns: 1fr;
+	}
+}

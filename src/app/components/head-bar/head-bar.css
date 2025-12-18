@@ -1,0 +1,35 @@
+.head-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: rgba(19, 28, 47, 0.7);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+h1.logo {
+  cursor: pointer;
+  transition: opacity 160ms ease;
+}
+
+h1.logo:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.head-actions {
+    display: flex;
+    gap: 12px;
+}
